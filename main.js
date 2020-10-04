@@ -87,7 +87,7 @@
     $("<h1>").text($("title").text()).appendTo(h);
     var desc = $("<div>").text("参考にしたページ: ").css({
         backgroundColor: "darkgray",
-        fontSize: "10px",
+        fontSize: "12px",
         borderRadius: "25px",
         padding: "1em"
     }).appendTo(h);
