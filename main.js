@@ -140,6 +140,7 @@
     addBtn(tools, "クリア", clearConsole);
     addBtn(tools, "入力クリア", function() {
         $("#js").val("");
+        yaju1919.save(yaju1919.makeSaveKey("inputJs"), $("#js").val());
     });
     addBtn(tools, "コピー", function() {
         yaju1919.copy($("#js").val());
