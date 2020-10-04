@@ -1,0 +1,135 @@
+.pln {
+    color: darkgray;
+}
+
+@media screen {
+    .str {
+        color: orange;
+    }
+
+    .kwd {
+        color: mediumslateblue;
+    }
+
+    .com {
+        color: gray;
+        font-style: italic;
+    }
+
+    .typ {
+        color: blueviolet;
+    }
+
+    .lit {
+        color: lightgreen;
+    }
+
+    .clo,
+    .opn,
+    .pun {
+        color: lightgray;
+    }
+
+    .tag {
+        color: goldenrod;
+    }
+
+    .atn {
+        color: burlywood;
+    }
+
+    .atv {
+        color: green;
+    }
+
+    .dec,
+    .var {
+        color: mediumpurple;
+    }
+
+    .fun {
+        color: red;
+    }
+}
+
+@media print,
+projection {
+
+    .kwd,
+    .tag,
+    .typ {
+        font-weight: 700;
+    }
+
+    .str {
+        color: #060;
+    }
+
+    .kwd {
+        color: #006;
+    }
+
+    .com {
+        color: #600;
+        font-style: italic;
+    }
+
+    .typ {
+        color: #404;
+    }
+
+    .lit {
+        color: #044;
+    }
+
+    .clo,
+    .opn,
+    .pun {
+        color: #440;
+    }
+
+    .tag {
+        color: #006;
+    }
+
+    .atn {
+        color: #404;
+    }
+
+    .atv {
+        color: #060;
+    }
+}
+
+pre.prettyprint {
+    padding: 2px;
+    background: #000;
+    border: 1px solid #888;
+}
+
+ol.linenums {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+li.L0,
+li.L1,
+li.L2,
+li.L3,
+li.L4,
+li.L5,
+li.L6,
+li.L7,
+li.L8,
+li.L9 {
+    color: #555;
+    list-style-type: decimal;
+}
+
+li.L1,
+li.L3,
+li.L5,
+li.L7,
+li.L9 {
+    background: #111;
+}
