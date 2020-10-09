@@ -114,8 +114,7 @@
         color: "lightblue",
         padding: "1em",
         maxWidth: "100%",
-        boxSizing;
-        "border-box",
+        boxSizing: "border-box",
         overflowY: "scroll"
     }).on("keyup", function(e) {
         if ("}];".indexOf(e.key) !== -1) formatCode();
