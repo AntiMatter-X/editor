@@ -90,7 +90,9 @@
         borderRadius: "25px",
         padding: "1em"
     }).appendTo(h);
-    $("<a>", {}).text("HTML & JavaScript エディタ").appendTo(desc);
+    $("<a>", {
+        href: "https://yaju1919.github.io/edita/"
+    }).text("HTML & JavaScript エディタ").appendTo(desc);
     h.append("<hr>");
     //////////////////////////////////////////////////
     var tools = $("<div>").css("padding", "0 0 5px 0").appendTo(h);
