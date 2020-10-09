@@ -171,6 +171,7 @@
 
     function copyCode() { // 入力コードをコピーする関数
         yaju1919.copy($("#js").val());
+        alert("コードをコピーしました");
     };
 
     function clearConsole() { // 結果をクリアする関数
