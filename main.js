@@ -1,16 +1,13 @@
 (function() {
     'use strict';
     //////////////////////////////////////////////////
-    var clearAllInterval; // setIntervalを全てクリアする関数を入れる変数
-    (function() {
+    var lineCount = 0;
+    var clearAllInterval = (function() {
         // setTimeoutとsetIntervalをコピー
         var setTimeout_copy = window.setTimeout;
         var setInterval_copy = window.setInterval;
         //-----------------------------
         var ids = [];
-        clearAllInterval = function() {
-            while (ids.length) clearInterval(ids.pop());
-        };
         window.setTimeout = function(func, delay, param1, param2, param3) {
             var id = setTimeout_copy(func, delay, param1, param2, param3);
             ids.push(id);
@@ -21,33 +18,36 @@
             ids.push(id);
             return id;
         };
+        return function() { // setIntervalを全てクリアする関数
+            while (ids.length) clearInterval(ids.pop());
+        };
     })();
     (function() {
-        function addResult(text, back, fontColor, symbol) {
+        function addResult(text, back, color, symbol) {
             var line = $("<div>").css({
                 backgroundColor: back,
-                color: fontColor,
+                color: color,
                 textAlign: "left",
                 maxWidth: "100%"
             }).appendTo("#result");
-            var color = yaju1919.getCSS(line).backgroundColor.match(/[0-9]+/g).map(function(v, i) {
+            var symbolColor = yaju1919.getCSS(line).backgroundColor.match(/[0-9]+/g).map(function(v, i) {
                 var n = Number(v);
                 var d = (n - n * 0.1);
                 return d >= 0 ? d : 0;
             });
-            $("<div>").text(symbol).css({
-                backgroundColor: "rgb(" + color + ")",
-                width: "4em",
+            $("<div>").text(symbol || lineCount++).css({
+                backgroundColor: "rgb(" + symbolColor + ")",
+                width: "3em",
                 textAlign: "center"
             }).appendTo(line);
             $("<div>").text(text).css("margin-left", "1em").appendTo(line);
             line.find("div").css("display", "inline-block");
         };
-        var list = { // back, fontColor, symbol
-            log: ["white", "black", "LOG"],
-            error: ["pink", "red", "ERROR"],
-            warn: ["lightyellow", "orange", "WARN"],
-            info: ["lightblue", "blue", "INFO"]
+        var list = { // back, color, symbol
+            log: ["white", "black", ""],
+            error: ["pink", "red", "×"],
+            warn: ["lightyellow", "orange", "▲"],
+            info: ["lightblue", "blue", "●"]
         };
         var origin = {};
         if (!window.console) window.console = {};
@@ -57,7 +57,7 @@
             window.console[k] = (function() {
                 var key = k,
                     back = aarr[0],
-                    fontColor = aarr[1],
+                    color = aarr[1],
                     symbol = aarr[2];
                 return function() {
                     var args = arguments;
@@ -68,12 +68,11 @@
                             return "{" + Object.keys(x).map(function(k) {
                                 return k + ":" + String(x[k])
                             }).join(",") + "}";
-                        } else if (yaju1919.judgeType(x, "Array")) {
-                            return "[" + String(x) + "]";
-                        } else if (!yaju1919.judgeType(x, ["Number", "String", "RegExp", "Boolean", "Error"])) return yaju1919.getType(x);
+                        } else if (yaju1919.judgeType(x, "Array")) return "[" + String(x) + "]";
+                        else if (!yaju1919.judgeType(x, ["Number", "String", "RegExp", "Boolean", "Error"])) return yaju1919.getType(x);
                         return String(x);
                     }).join(", ");
-                    addResult(str, back, fontColor, symbol);
+                    addResult(str, back, color, symbol)
                 };
             })();
         };
@@ -85,15 +84,13 @@
         padding: "1em"
     }).appendTo("body");
     $("<h1>").text($("title").text()).appendTo(h);
-    var desc = $("<div>").text("参考にしたページ: ").css({
+    var desc = $("<div>").text("参考ページ: ").css({
         backgroundColor: "darkgray",
         fontSize: "12px",
         borderRadius: "25px",
         padding: "1em"
     }).appendTo(h);
-    $("<a>", {
-        href: "https://yaju1919.github.io/edita/"
-    }).text("HTML & JavaScript エディタ").appendTo(desc);
+    $("<a>", {}).text("HTML & JavaScript エディタ").appendTo(desc);
     h.append("<hr>");
     //////////////////////////////////////////////////
     var tools = $("<div>").css("padding", "0 0 5px 0").appendTo(h);
@@ -117,7 +114,8 @@
         color: "lightblue",
         padding: "1em",
         maxWidth: "100%",
-        boxSizing: "border-box",
+        boxSizing;
+        "border-box",
         overflowY: "scroll"
     }).on("keyup", function(e) {
         if ("}];".indexOf(e.key) !== -1) formatCode();
@@ -138,13 +136,8 @@
     //////////////////////////////////////////////////
     addBtn(tools, "実行", run);
     addBtn(tools, "クリア", clearConsole);
-    addBtn(tools, "入力クリア", function() {
-        $("#js").val("");
-        yaju1919.save("inputJs", $("#js").val());
-    });
-    addBtn(tools, "コピー", function() {
-        yaju1919.copy($("#js").val());
-    });
+    addBtn(tools, "入力クリア", clearInput);
+    addBtn(tools, "コピー", copyCode);
     var inputFormatBool = yaju1919.addInputBool(tools, {
         save: "inputFormatBool",
         id: "format-btn",
@@ -154,11 +147,17 @@
     });
     tools.find("button").css("margin", "1px");
     //////////////////////////////////////////////////
-    function addBtn(h, title, func) {
+    function addBtn(h, title, func) { // ボタンを追加する関数
         return $("<button>").text(title).click(func).appendTo(h);
     };
 
-    function formatCode() {
+    function disableElement(h, bool) { // 要素を無効化する関数
+        h.find("*").each(function(i, e) {
+            e.disabled = bool;
+        });
+    };
+
+    function formatCode() { // 入力コードを整形する関数
         if (inputFormatBool === undefined) return;
         if (!inputFormatBool()) return;
         $("#js").val(js_beautify($("#js").val(), {
@@ -166,27 +165,31 @@
         }));
     };
 
-    function clearConsole() {
-        clearAllInterval();
-        $("#result").empty();
+    function clearInput() { // コード入力欄を空にする関数
+        $("#js").val("");
+        yaju1919.save("inputJs".$("#js").val());
     };
 
-    function run() {
+    function copyCode() { // 入力コードをコピーする関数
+        yaju1919.copy($("#js").val());
+    };
+
+    function clearConsole() { // 結果をクリアする関数
+        clearAllInterval();
+        $("#result").empty();
+        lineCount = 0;
+    };
+
+    function run() { // 入力コードを実行する関数
         clearConsole();
         try {
             console.log((0, eval)($("#js").val()));
         } catch (e) {
-            console.error(e);
+            console.error(e)
         };
     };
 
-    function disableElement(h, bool) {
-        h.find("*").each(function(i, e) {
-            e.disabled = bool;
-        });
-    };
-
-    function togglePrettify() {
+    function togglePrettify() { // 構文強調を切り替える関数
         if (inputPrettifyBool === undefined) return;
         if (inputPrettifyBool()) {
             disableElement(tools, true);
