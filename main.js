@@ -114,7 +114,7 @@
     tools.append("<hr>");
     var selectFileType = antimatterx.addSelect(tools, {
             title: "ファイル形式",
-            placeholder: "テキスト",
+            placeholder: "ファイルの形式を選択",
             save: "selectFileType",
             list: {
                 "テキスト": 0,
