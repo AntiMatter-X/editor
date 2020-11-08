@@ -132,11 +132,12 @@
                         reader.readAsText(file);
                         reader.onload = function() {
                             elm.val(reader.result);
+                            saveCurrentTabInput();
                         };
                     } else antimatterx.toImage.decode(file, function(v) {
                         elm.val(v);
+                        saveCurrentTabInput();
                     });
-                    saveCurrentTabInput();
                 }).click();
             },
             "エクスポート": function() {
@@ -226,11 +227,13 @@
     };
 
     function formatCode(flag) { // JavaScriptの入力コードを整形
-        if (!flag || getCurrentTabName === "JavaScript") return;
-        inputJS.val(js_beautify(inputJS.val(), {
-            max_preserve: 2
-        }));
-        saveCurrentTabInput();
+        try {
+            if (!flag || getCurrentTabName === "JavaScript") return;
+            inputJS.val(js_beautify(inputJS.val(), {
+                max_preserve: 2
+            }));
+            saveCurrentTabInput();
+        } catch (e) {};
     };
     //--------------------------------------------------
     var g_lineCount = 0, // コンソールの行数
