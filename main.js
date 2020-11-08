@@ -321,7 +321,7 @@
                     var nextSource = arguments[i];
                     if (nextSource !== null && nextSource !== undefined)
                         for (var k in nextSource)
-                            if (Object.prototype.hasOwnProperty.call(nextSource, k)) to[k] nextSource[k];
+                            if (Object.prototype.hasOwnProperty.call(nextSource, k)) to[k] = nextSource[k];
                 };
                 return to;
             },
