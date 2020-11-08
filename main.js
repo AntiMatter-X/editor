@@ -260,7 +260,7 @@
     (function() { // IEでもjs-beautifyが動くようにする
         if (antimatterx.judgeType(Object.assign, "Function")) return console.log("done");
         // Must be writable: true, enumerable: false, configurable: true
-        Object.defineProperty(Object, "assign". { // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+        Object.defineProperty(Object, "assign", { // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
             value: function assign(target, varArgs) { // .length of function is 2
                 'use strict';
                 if (target === null || target === undefined) {
