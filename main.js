@@ -93,7 +93,7 @@
     var basicToolButton = {
         "実行": run,
         "クリア": clearResult,
-        "入力クリア": inputClear,
+        "入力クリア": clearInput,
         "コピー": copyCode
     };
     for (var k in basicToolButton) antimatterx.addButton(tools, {
@@ -202,7 +202,7 @@
             while (g_styles.length) g_styles.pop().remove();
     };
 
-    function inputClear() { // 入力コードをクリアする
+    function clearInput() { // 入力コードをクリアする
         area[getCurrentTabName()].find("textarea").val("");
         saveCurrentTabInput();
     };
@@ -257,59 +257,6 @@
                 while (setIds.length) clearInterval(setIds.pop());
             };
         })();
-    (function() { // IEでもjs-beautifyが動くようにする
-        /*
-        if (antimatterx.judgeType(Object.assign, "Function")) return console.log("done");
-        // Must be writable: true, enumerable: false, configurable: true
-        Object.defineProperty(Object, "assign", { // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-            value: function assign(target, varArgs) { // .length of function is 2
-                'use strict';
-                if (target === null || target === undefined) {
-                    throw new TypeError("Cannot convert undefined or null object");
-                    var to = Object(target);
-                    for (var i = 1; i < arguments.length; i++) {
-                        var nextSource = arguments[i];
-                        // Avoid bugs when hasOwnProperty is shadowed
-                        if (nextSource !== null && nextSource !== undefined)
-                            for (var nextKey in nextSource) to[nextKey] = nextSource[nextKey];
-                    };
-                };
-                return to;
-            },
-            writable: true,
-            configurable: true
-        });
-        */
-        if (typeof Object.assign !== 'function') {
-            // Must be writable: true, enumerable: false, configurable: true
-            Object.defineProperty(Object, "assign", {
-                value: function assign(target, varArgs) { // .length of function is 2
-                    'use strict';
-                    if (target === null || target === undefined) {
-                        throw new TypeError('Cannot convert undefined or null to object');
-                    }
-
-                    var to = Object(target);
-
-                    for (var index = 1; index < arguments.length; index++) {
-                        var nextSource = arguments[index];
-
-                        if (nextSource !== null && nextSource !== undefined) {
-                            for (var nextKey in nextSource) {
-                                // Avoid bugs when hasOwnProperty is shadowed
-                                if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-                                    to[nextKey] = nextSource[nextKey];
-                                }
-                            }
-                        }
-                    }
-                    return to;
-                },
-                writable: true,
-                configurable: true
-            });
-        }
-    })();
     (function() {
         function addResult(str, back, color, symbol) {
             var line = $("<div>").css({
@@ -363,6 +310,24 @@
                 };
             })();
         };
+    })();
+    (function() { // js-beautifyをIEでも使えるようにする
+        if (antimatterx.judgeType(Object.assign, "Function")) return;
+        Object.defineProperty(Object, "assign", { // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+            value: function assign(target, varArgs) {
+                if (target === null || target === undefined) throw new TypeError("Cannot convert undefined or null to object");
+                var to = Object(target);
+                for (var i = 1; i < arguments.length; i++) {
+                    var nextSource = arguments[i];
+                    if (nextSource !== null && nextSource !== undefined)
+                        for (var k in nextSource)
+                            if (Object.prototype.hasOwnProperty.call(nextSource, k)) to[k] nextSource[k];
+                };
+                return to;
+            },
+            writable: true,
+            configurable: true
+        });
     })();
     //--------------------------------------------------
 })();
