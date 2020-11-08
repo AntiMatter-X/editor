@@ -114,13 +114,13 @@
     tools.append("<hr>");
     var selectFileType = antimatterx.addSelect(tools, {
             title: "ファイル形式",
-            value: 0,
+            placeholder: "テキスト",
             save: "selectFileType",
             list: {
                 "テキスト": 0,
                 "画像": 1
             }
-        }),
+        }).val("0"),
         fileButton = {
             "インポート": function() {
                 $("<input>", {
