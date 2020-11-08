@@ -228,13 +228,11 @@
     };
 
     function formatCode(flag) { // JavaScriptの入力コードを整形
-        try {
-            if (!flag || getCurrentTabName === "JavaScript") return;
-            inputJS.val(js_beautify(inputJS.val(), {
-                max_preserve: 2
-            }));
-            saveCurrentTabInput();
-        } catch (e) {};
+        if (!flag || getCurrentTabName === "JavaScript") return;
+        inputJS.val(js_beautify(inputJS.val(), {
+            max_preserve: 2
+        }));
+        saveCurrentTabInput();
     };
     //--------------------------------------------------
     var g_lineCount = 0, // コンソールの行数
@@ -259,6 +257,28 @@
                 while (setIds.length) clearInterval(setIds.pop());
             };
         })();
+    (function() { // IEでもjs-beautifyが動くようにする
+        if (antimatterx.judgeType(Object.assign, "Function")) return console.log("done");
+        // Must be writable: true, enumerable: false, configurable: true
+        Object.defineProperty(Object, "assign". { // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+            value: function assign(target, varArgs) { // .length of function is 2
+                'use strict';
+                if (target === null || target === undefined) {
+                    throw new TypeError("Cannot convert undefined or null object");
+                    var to = Object(target);
+                    for (var i = 1; i < arguments.length; i++) {
+                        var nextSource = arguments[i];
+                        // Avoid bugs when hasOwnProperty is shadowed
+                        if (nextSource !== null && nextSource !== undefined)
+                            for (var nextKey in nextSource) to[nextKey] = nextSource[nextKey];
+                    };
+                };
+                return to;
+            },
+            writable: true,
+            configurable: true
+        });
+    })();
     (function() {
         function addResult(str, back, color, symbol) {
             var line = $("<div>").css({
